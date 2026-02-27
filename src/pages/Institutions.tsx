@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, MoreVertical, MapPin, Phone, Mail, FileSpreadsheet, FileText, ExternalLink, Edit2, Trash2 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { getGoogleMapsUrl } from '../lib/utils';
 import { supabase } from '../lib/supabaseClient';
@@ -117,7 +117,7 @@ const Institutions = () => {
     doc.setFontSize(10);
     doc.text(`Fecha de generación: ${date}`, 14, 28);
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: 35,
       head: [['Código', 'Nombre', 'Dirección', 'Email', 'Teléfono']],
       body: filtered.map(i => [i.code, i.name, i.address, i.email, i.phone]),

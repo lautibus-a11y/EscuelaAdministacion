@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, MoreVertical, User, School, FileText, FileSpreadsheet, Edit2, Trash2 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { supabase } from '../lib/supabaseClient';
 import Modal from '../components/Modal';
@@ -121,7 +121,7 @@ const Students = () => {
     doc.setFontSize(10);
     doc.text(`Fecha de generación: ${date}`, 14, 28);
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: 35,
       head: [['Nombre', 'Institución', 'Grado', 'Observaciones']],
       body: filtered.map(s => [s.full_name, s.institutions?.name || 'N/A', s.grade, s.observations || '']),
