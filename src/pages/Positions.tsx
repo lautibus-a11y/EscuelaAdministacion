@@ -175,9 +175,9 @@ const Positions = () => {
               <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase tracking-wider">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Cargo / Institución</th>
-                  <th className="px-6 py-4 font-semibold">Docente</th>
-                  <th className="px-6 py-4 font-semibold">Tipo</th>
-                  <th className="px-6 py-4 font-semibold">Estado</th>
+                  <th className="px-6 py-4 font-semibold hidden md:table-cell">Docente</th>
+                  <th className="px-6 py-4 font-semibold hidden lg:table-cell">Tipo</th>
+                  <th className="px-6 py-4 font-semibold hidden lg:table-cell">Estado</th>
                   <th className="px-6 py-4 text-right">Acciones</th>
                 </tr>
               </thead>
@@ -191,9 +191,23 @@ const Positions = () => {
                           <School className="w-3 h-3" />
                           {pos.institutions?.name || 'Sin institución'}
                         </div>
+                        <div className="md:hidden flex flex-col gap-1 mt-2">
+                          <span className="text-[10px] text-zinc-600 flex items-center gap-1">
+                            <User className="w-2.5 h-2.5" />
+                            {pos.teachers?.full_name || 'Sin docente'}
+                          </span>
+                          <div className="flex gap-2">
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${pos.type === 'Titular' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>
+                              {pos.type}
+                            </span>
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${pos.status === 'Activo' ? 'bg-emerald-100 text-emerald-700' : 'bg-zinc-100 text-zinc-600'}`}>
+                              {pos.status}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hidden md:table-cell">
                       <div className="flex flex-col">
                         <div className="flex items-center gap-2 text-sm text-zinc-700 font-medium">
                           <User className="w-3 h-3" />
@@ -207,7 +221,7 @@ const Positions = () => {
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hidden lg:table-cell">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${pos.type === 'Titular' ? 'bg-blue-100 text-blue-700' :
                         pos.type === 'Suplente' ? 'bg-amber-100 text-amber-700' :
                           'bg-purple-100 text-purple-700'
@@ -215,7 +229,7 @@ const Positions = () => {
                         {pos.type}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hidden lg:table-cell">
                       <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${pos.status === 'Activo' ? 'bg-emerald-100 text-emerald-700' :
                         pos.status === 'Pendiente' ? 'bg-amber-100 text-amber-500' :
                           'bg-zinc-100 text-zinc-600'
@@ -223,8 +237,8 @@ const Positions = () => {
                         {pos.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <td className="px-3 md:px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1 md:gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleOpenModal(pos)}
                           className="p-2 hover:bg-blue-50 rounded-lg text-blue-500 transition-colors"

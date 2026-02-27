@@ -214,9 +214,9 @@ const Institutions = () => {
             <table className="w-full text-left">
               <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase tracking-wider">
                 <tr>
-                  <th className="px-6 py-4 font-semibold">Código</th>
                   <th className="px-6 py-4 font-semibold">Institución</th>
-                  <th className="px-6 py-4 font-semibold">Contacto</th>
+                  <th className="px-6 py-4 font-semibold hidden md:table-cell">Código</th>
+                  <th className="px-6 py-4 font-semibold hidden lg:table-cell">Contacto</th>
                   <th className="px-6 py-4 text-right">Acciones</th>
                 </tr>
               </thead>
@@ -224,13 +224,13 @@ const Institutions = () => {
                 {filtered.map((inst) => (
                   <tr key={inst.id} className="hover:bg-zinc-50 transition-colors group">
                     <td className="px-6 py-4">
-                      <span className="px-2 py-1 bg-zinc-100 text-zinc-600 rounded text-xs font-bold">
-                        {inst.code}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-zinc-900">{inst.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-zinc-900">{inst.name}</span>
+                          <span className="md:hidden px-1.5 py-0.5 bg-zinc-100 text-zinc-600 rounded text-[10px] font-bold">
+                            {inst.code}
+                          </span>
+                        </div>
                         {inst.address && (
                           <a
                             href={getGoogleMapsUrl(inst.address)}
@@ -239,13 +239,32 @@ const Institutions = () => {
                             className="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 hover:underline mt-1 transition-colors"
                           >
                             <MapPin className="w-3 h-3" />
-                            {inst.address}
+                            <span className="truncate max-w-[150px]">{inst.address}</span>
                             <ExternalLink className="w-2.5 h-2.5" />
                           </a>
                         )}
+                        <div className="lg:hidden flex flex-col gap-1 mt-2">
+                          {inst.phone && (
+                            <div className="flex items-center gap-2 text-[10px] text-zinc-600">
+                              <Phone className="w-2.5 h-2.5" />
+                              {inst.phone}
+                            </div>
+                          )}
+                          {inst.email && (
+                            <div className="flex items-center gap-2 text-[10px] text-zinc-600">
+                              <Mail className="w-2.5 h-2.5" />
+                              {inst.email}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hidden md:table-cell">
+                      <span className="px-2 py-1 bg-zinc-100 text-zinc-600 rounded text-xs font-bold">
+                        {inst.code}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 hidden lg:table-cell">
                       <div className="flex flex-col gap-1">
                         {inst.phone && (
                           <div className="flex items-center gap-2 text-xs text-zinc-600">
@@ -261,8 +280,8 @@ const Institutions = () => {
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-3 md:px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1 md:gap-2">
                         <button
                           onClick={() => handleOpenModal(inst)}
                           className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"

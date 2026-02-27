@@ -170,10 +170,9 @@ const Visits = () => {
             <table className="w-full text-left">
               <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase tracking-wider">
                 <tr>
-                  <th className="px-6 py-4 font-semibold">Institución</th>
-                  <th className="px-6 py-4 font-semibold">Fecha / Supervisor</th>
-                  <th className="px-6 py-4 font-semibold">Propósito / Notas</th>
-                  <th className="px-6 py-4 font-semibold">Estado</th>
+                  <th className="px-6 py-4 font-semibold">Institución / Fecha</th>
+                  <th className="px-6 py-4 font-semibold hidden md:table-cell">Propósito / Notas</th>
+                  <th className="px-6 py-4 font-semibold hidden lg:table-cell">Estado</th>
                   <th className="px-6 py-4 text-right">Acciones</th>
                 </tr>
               </thead>
@@ -181,12 +180,24 @@ const Visits = () => {
                 {filtered.map((visit) => (
                   <tr key={visit.id} className="hover:bg-zinc-50 transition-colors group">
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-sm font-bold text-zinc-900">
-                        <School className="w-4 h-4 text-zinc-400" />
-                        {visit.institutions?.name || 'Sin institución'}
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2 text-sm font-bold text-zinc-900">
+                          <School className="w-4 h-4 text-emerald-600" />
+                          {visit.institutions?.name || 'Sin institución'}
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px] text-zinc-500 mt-1">
+                          <Calendar className="w-3 h-3 text-zinc-400" />
+                          {visit.visit_date ? new Date(visit.visit_date).toLocaleDateString() : '-'}
+                        </div>
+                        <div className="md:hidden mt-2 flex flex-col gap-1">
+                          <span className="text-xs text-zinc-600 font-medium line-clamp-1">{visit.purpose}</span>
+                          <span className={`inline-block w-fit px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase ${visit.status === 'Completada' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
+                            {visit.status}
+                          </span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hidden md:table-cell">
                       <div className="flex flex-col">
                         <div className="flex items-center gap-2 text-sm text-zinc-700 font-medium">
                           <Calendar className="w-3 h-3" />
@@ -198,13 +209,13 @@ const Visits = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hidden md:table-cell">
                       <div className="flex flex-col">
                         <span className="text-sm font-semibold text-zinc-800 line-clamp-1">{visit.purpose}</span>
                         <p className="text-xs text-zinc-500 line-clamp-1 mt-0.5">{visit.notes || '-'}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hidden lg:table-cell">
                       <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${visit.status === 'Completada' ? 'bg-emerald-100 text-emerald-700' :
                         visit.status === 'Programada' ? 'bg-blue-100 text-blue-700' :
                           'bg-red-100 text-red-700'
@@ -212,8 +223,8 @@ const Visits = () => {
                         {visit.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <td className="px-3 md:px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1 md:gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleOpenModal(visit)}
                           className="p-2 hover:bg-blue-50 rounded-lg text-blue-500 transition-colors"

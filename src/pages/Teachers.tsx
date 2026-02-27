@@ -210,8 +210,8 @@ const Teachers = () => {
               <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase tracking-wider">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Docente</th>
-                  <th className="px-6 py-4 font-semibold">DNI</th>
-                  <th className="px-6 py-4 font-semibold">Contacto</th>
+                  <th className="px-6 py-4 font-semibold hidden md:table-cell">DNI</th>
+                  <th className="px-6 py-4 font-semibold hidden lg:table-cell">Contacto</th>
                   <th className="px-6 py-4 text-right">Acciones</th>
                 </tr>
               </thead>
@@ -220,14 +220,17 @@ const Teachers = () => {
                   <tr key={teacher.id} className="hover:bg-zinc-50 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-zinc-100 rounded-full flex items-center justify-center text-zinc-500">
+                        <div className="w-8 h-8 bg-zinc-100 rounded-full flex items-center justify-center text-zinc-500 flex-shrink-0">
                           <UserSquare2 className="w-4 h-4" />
                         </div>
-                        <span className="text-sm font-bold text-zinc-900">{teacher.full_name}</span>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold text-zinc-900">{teacher.full_name}</span>
+                          <span className="text-xs text-zinc-500 md:hidden">DNI: {teacher.dni}</span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-zinc-600">{teacher.dni}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-sm text-zinc-600 hidden md:table-cell">{teacher.dni}</td>
+                    <td className="px-6 py-4 hidden lg:table-cell">
                       <div className="flex flex-col gap-1">
                         {teacher.email && (
                           <div className="flex items-center gap-2 text-xs text-zinc-600">
@@ -243,8 +246,8 @@ const Teachers = () => {
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <td className="px-3 md:px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1 md:gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleOpenModal(teacher)}
                           className="p-2 hover:bg-blue-50 rounded-lg text-blue-500 transition-colors"
