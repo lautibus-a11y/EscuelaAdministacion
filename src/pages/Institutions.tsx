@@ -7,6 +7,7 @@ import { getGoogleMapsUrl } from '../lib/utils';
 import { supabase } from '../lib/supabaseClient';
 import Modal from '../components/Modal';
 import ConfirmModal from '../components/ConfirmModal';
+import ExportModal from '../components/ExportModal';
 
 const Institutions = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,6 +22,11 @@ const Institutions = () => {
   // Confirm Modal State
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+
+  // Export Modal State
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const [exportType, setExportType] = useState<'pdf' | 'excel'>('pdf');
+  const [exportFilename, setExportFilename] = useState('');
 
   // Form State
   const [formData, setFormData] = useState({
@@ -108,39 +114,46 @@ const Institutions = () => {
     }
   };
 
-  const downloadPDF = () => {
-    const doc = new jsPDF() as any;
-    const date = new Date().toLocaleDateString('es-AR');
-
-    doc.setFontSize(18);
-    doc.text('EduGestión - Listado de Instituciones', 14, 20);
-    doc.setFontSize(10);
-    doc.text(`Fecha de generación: ${date}`, 14, 28);
-
-    autoTable(doc, {
-      startY: 35,
-      head: [['Código', 'Nombre', 'Dirección', 'Email', 'Teléfono']],
-      body: filtered.map(i => [i.code, i.name, i.address, i.email, i.phone]),
-      headStyles: { fillColor: [16, 185, 129] },
-      styles: { fontSize: 9 },
-    });
-
-    doc.save(`instituciones_${date.replace(/\//g, '-')}.pdf`);
+  const getStandardFilename = (ext: string) => {
+    const date = new Date().toISOString().split('T')[0];
+    return `instituciones_${date}.${ext}`;
   };
 
-  const downloadExcel = () => {
-    const date = new Date().toLocaleDateString('es-AR');
-    const worksheet = XLSX.utils.json_to_sheet(filtered.map(i => ({
-      'Código': i.code,
-      'Nombre': i.name,
-      'Dirección': i.address || '',
-      'Email': i.email || '',
-      'Teléfono': i.phone || ''
-    })));
+  const handleOpenExport = (type: 'pdf' | 'excel') => {
+    setExportType(type);
+    setExportFilename(getStandardFilename(type === 'pdf' ? 'pdf' : 'xlsx'));
+    setIsExportOpen(true);
+  };
 
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Instituciones");
-    XLSX.writeFile(workbook, `instituciones_${date.replace(/\//g, '-')}.xlsx`);
+  const runExport = () => {
+    const date = new Date().toISOString().split('T')[0];
+    if (exportType === 'pdf') {
+      const doc = new jsPDF() as any;
+      doc.setFontSize(18);
+      doc.text('EduGestión - Listado de Instituciones', 14, 20);
+      doc.setFontSize(10);
+      doc.text(`Fecha de generación: ${new Date().toLocaleDateString('es-AR')}`, 14, 28);
+
+      autoTable(doc, {
+        startY: 35,
+        head: [['Código', 'Nombre', 'Dirección', 'Email', 'Teléfono']],
+        body: filtered.map(i => [i.code, i.name, i.address, i.email, i.phone]),
+        headStyles: { fillColor: [16, 185, 129] },
+        styles: { fontSize: 9 },
+      });
+      doc.save(exportFilename);
+    } else {
+      const worksheet = XLSX.utils.json_to_sheet(filtered.map(i => ({
+        'Código': i.code,
+        'Nombre': i.name,
+        'Dirección': i.address || '',
+        'Email': i.email || '',
+        'Teléfono': i.phone || ''
+      })));
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Instituciones");
+      XLSX.writeFile(workbook, exportFilename);
+    }
   };
 
   return (
@@ -153,7 +166,7 @@ const Institutions = () => {
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 bg-white border border-zinc-200 rounded-xl p-1 shadow-sm">
             <button
-              onClick={downloadPDF}
+              onClick={() => handleOpenExport('pdf')}
               className="flex items-center gap-2 px-3 py-1.5 hover:bg-zinc-50 rounded-lg text-zinc-700 text-sm font-semibold transition-colors"
             >
               <FileText className="w-4 h-4 text-red-500" />
@@ -161,7 +174,7 @@ const Institutions = () => {
             </button>
             <div className="w-px h-4 bg-zinc-200"></div>
             <button
-              onClick={downloadExcel}
+              onClick={() => handleOpenExport('excel')}
               className="flex items-center gap-2 px-3 py-1.5 hover:bg-zinc-50 rounded-lg text-zinc-700 text-sm font-semibold transition-colors"
             >
               <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
@@ -354,6 +367,15 @@ const Institutions = () => {
         onConfirm={handleConfirmDelete}
         title="Eliminar Institución"
         message="¿Estás seguro de que deseas eliminar esta institución? Esta acción no se puede deshacer."
+      />
+
+      <ExportModal
+        isOpen={isExportOpen}
+        onClose={() => setIsExportOpen(false)}
+        onConfirm={runExport}
+        title="Confirmar Exportación"
+        filename={exportFilename}
+        type={exportType}
       />
     </div>
   );
