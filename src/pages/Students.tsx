@@ -261,7 +261,7 @@ const Students = () => {
                       <p className="text-sm text-zinc-600 line-clamp-1">{student.observations || '-'}</p>
                     </td>
                     <td className="px-3 md:px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1 md:gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-end gap-1 md:gap-2">
                         <button
                           onClick={() => downloadFicha(student)}
                           className="p-2 hover:bg-zinc-100 rounded-lg text-zinc-500 hover:text-emerald-600 transition-colors"

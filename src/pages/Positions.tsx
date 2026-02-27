@@ -238,7 +238,7 @@ const Positions = () => {
                       </span>
                     </td>
                     <td className="px-3 md:px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1 md:gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-end gap-1 md:gap-2">
                         <button
                           onClick={() => handleOpenModal(pos)}
                           className="p-2 hover:bg-blue-50 rounded-lg text-blue-500 transition-colors"
