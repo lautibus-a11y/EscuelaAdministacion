@@ -11,6 +11,10 @@ import Positions from './pages/Positions';
 import Visits from './pages/Visits';
 import Stats from './pages/Stats';
 import Login from './pages/Login';
+import Courses from './pages/Courses';
+import Substitutions from './pages/Substitutions';
+import ActivityLog from './pages/ActivityLog';
+import InstitutionDetail from './pages/InstitutionDetail';
 
 export default function App() {
   return (
@@ -31,6 +35,10 @@ export default function App() {
             <Route path="/positions" element={<Positions />} />
             <Route path="/visits" element={<Visits />} />
             <Route path="/stats" element={<Stats />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/substitutions" element={<Substitutions />} />
+            <Route path="/activity" element={<ActivityLog />} />
+            <Route path="/institutions/:id" element={<InstitutionDetail />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

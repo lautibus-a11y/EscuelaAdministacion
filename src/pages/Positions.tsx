@@ -3,6 +3,7 @@ import { Plus, Search, School, User, Link as LinkIcon, Edit2, Trash2 } from 'luc
 import { supabase } from '../lib/supabaseClient';
 import Modal from '../components/Modal';
 import ConfirmModal from '../components/ConfirmModal';
+import { logActivity } from '../lib/activityLog';
 
 const Positions = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -106,9 +107,11 @@ const Positions = () => {
       if (isEditing && currentId) {
         const { error } = await supabase.from('positions').update(payload).eq('id', currentId);
         if (error) throw error;
+        await logActivity('cargo', 'EDITAR', `Cargo "${formData.title}" editado.`);
       } else {
         const { error } = await supabase.from('positions').insert([payload]);
         if (error) throw error;
+        await logActivity('cargo', 'CREAR', `Cargo "${formData.title}" creado.`);
       }
       setIsModalOpen(false);
       fetchData();
@@ -125,8 +128,12 @@ const Positions = () => {
   const handleConfirmDelete = async () => {
     if (!itemToDelete) return;
     try {
+      const positionToDelete = positions.find(p => p.id === itemToDelete);
       const { error } = await supabase.from('positions').delete().eq('id', itemToDelete);
       if (error) throw error;
+      if (positionToDelete) {
+        await logActivity('cargo', 'ELIMINAR', `Cargo "${positionToDelete.title}" eliminado.`);
+      }
       fetchData();
     } catch (error: any) {
       alert('Error eliminando: ' + error.message);

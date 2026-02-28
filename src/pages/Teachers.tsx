@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabaseClient';
 import Modal from '../components/Modal';
 import ConfirmModal from '../components/ConfirmModal';
 import ExportModal from '../components/ExportModal';
+import { logActivity } from '../lib/activityLog';
 
 const Teachers = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -82,9 +83,11 @@ const Teachers = () => {
       if (isEditing && currentId) {
         const { error } = await supabase.from('teachers').update(formData).eq('id', currentId);
         if (error) throw error;
+        await logActivity('docente', 'EDITAR', `Docente "${formData.full_name}" editado.`);
       } else {
         const { error } = await supabase.from('teachers').insert([formData]);
         if (error) throw error;
+        await logActivity('docente', 'CREAR', `Docente "${formData.full_name}" creado.`);
       }
       setIsModalOpen(false);
       fetchTeachers();
@@ -101,8 +104,12 @@ const Teachers = () => {
   const handleConfirmDelete = async () => {
     if (!itemToDelete) return;
     try {
+      const teacherToDelete = teachers.find(t => t.id === itemToDelete);
       const { error } = await supabase.from('teachers').delete().eq('id', itemToDelete);
       if (error) throw error;
+      if (teacherToDelete) {
+        await logActivity('docente', 'ELIMINAR', `Docente "${teacherToDelete.full_name}" eliminado.`);
+      }
       fetchTeachers();
     } catch (error: any) {
       alert('Error eliminando: ' + error.message);

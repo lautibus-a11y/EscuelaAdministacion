@@ -1,15 +1,18 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  School, 
-  Users, 
-  UserSquare2, 
-  Briefcase, 
-  ClipboardCheck, 
+import {
+  LayoutDashboard,
+  School,
+  Users,
+  UserSquare2,
+  Briefcase,
+  ClipboardCheck,
   BarChart3,
   LogOut,
-  X
+  X,
+  BookOpen,
+  RefreshCw,
+  History
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { cn } from '../../lib/utils';
@@ -27,9 +30,12 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     { icon: School, label: 'Instituciones', path: '/institutions', roles: ['admin', 'supervisor'] },
     { icon: Users, label: 'Alumnos', path: '/students', roles: ['admin', 'teacher'] },
     { icon: UserSquare2, label: 'Docentes', path: '/teachers', roles: ['admin'] },
+    { icon: BookOpen, label: 'Cursos', path: '/courses', roles: ['admin', 'supervisor'] },
     { icon: Briefcase, label: 'Cargos', path: '/positions', roles: ['admin', 'supervisor'] },
+    { icon: RefreshCw, label: 'Suplencias', path: '/substitutions', roles: ['admin', 'supervisor'] },
     { icon: ClipboardCheck, label: 'Visitas', path: '/visits', roles: ['admin', 'supervisor'] },
     { icon: BarChart3, label: 'Estadísticas', path: '/stats', roles: ['admin', 'supervisor'] },
+    { icon: History, label: 'Historial', path: '/activity', roles: ['admin', 'supervisor'] },
   ];
 
   const filteredItems = menuItems.filter(item => item.roles.includes(role || ''));
@@ -46,7 +52,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           </div>
           <h1 className="text-white font-bold text-xl tracking-tight">EduGestión</h1>
         </div>
-        <button 
+        <button
           onClick={onClose}
           className="lg:hidden p-2 hover:bg-zinc-900 rounded-lg text-zinc-400"
         >
@@ -62,8 +68,8 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             onClick={() => onClose()}
             className={({ isActive }) => cn(
               "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors group",
-              isActive 
-                ? "bg-emerald-500/10 text-emerald-500" 
+              isActive
+                ? "bg-emerald-500/10 text-emerald-500"
                 : "hover:bg-zinc-900 hover:text-zinc-200"
             )}
           >
@@ -74,7 +80,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
       </nav>
 
       <div className="p-4 border-t border-zinc-800">
-        <button 
+        <button
           onClick={logout}
           className="flex items-center gap-3 px-3 py-2 w-full rounded-lg hover:bg-zinc-900 hover:text-zinc-200 transition-colors"
         >

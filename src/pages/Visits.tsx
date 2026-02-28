@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient';
 import Modal from '../components/Modal';
 import ConfirmModal from '../components/ConfirmModal';
 import { useAuth } from '../contexts/AuthContext';
+import { logActivity } from '../lib/activityLog';
 
 const Visits = () => {
   const { user } = useAuth();
@@ -102,9 +103,11 @@ const Visits = () => {
       if (isEditing && currentId) {
         const { error } = await supabase.from('visits').update(payload).eq('id', currentId);
         if (error) throw error;
+        await logActivity('visita', 'EDITAR', `Visita a la institución "${institutions.find(i => i.id === formData.institution_id)?.name}" actualizada.`);
       } else {
         const { error } = await supabase.from('visits').insert([payload]);
         if (error) throw error;
+        await logActivity('visita', 'CREAR', `Nueva visita registrada para "${institutions.find(i => i.id === formData.institution_id)?.name}".`);
       }
       setIsModalOpen(false);
       fetchData();
@@ -123,6 +126,7 @@ const Visits = () => {
     try {
       const { error } = await supabase.from('visits').delete().eq('id', itemToDelete);
       if (error) throw error;
+      await logActivity('visita', 'ELIMINAR', `Visita eliminada.`);
       fetchData();
     } catch (error: any) {
       alert('Error eliminando: ' + error.message);

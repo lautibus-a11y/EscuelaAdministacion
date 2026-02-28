@@ -8,8 +8,11 @@ import { supabase } from '../lib/supabaseClient';
 import Modal from '../components/Modal';
 import ConfirmModal from '../components/ConfirmModal';
 import ExportModal from '../components/ExportModal';
+import { useNavigate } from 'react-router-dom';
+import { logActivity } from '../lib/activityLog';
 
 const Institutions = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [institutions, setInstitutions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -85,9 +88,11 @@ const Institutions = () => {
       if (isEditing && currentId) {
         const { error } = await supabase.from('institutions').update(formData).eq('id', currentId);
         if (error) throw error;
+        await logActivity('institución', 'EDITAR', `Institución "${formData.name}" editada.`);
       } else {
         const { error } = await supabase.from('institutions').insert([formData]);
         if (error) throw error;
+        await logActivity('institución', 'CREAR', `Institución "${formData.name}" creada.`);
       }
       setIsModalOpen(false);
       fetchInstitutions();
@@ -104,8 +109,12 @@ const Institutions = () => {
   const handleConfirmDelete = async () => {
     if (!itemToDelete) return;
     try {
+      const instToDelete = institutions.find(i => i.id === itemToDelete);
       const { error } = await supabase.from('institutions').delete().eq('id', itemToDelete);
       if (error) throw error;
+      if (instToDelete) {
+        await logActivity('institución', 'ELIMINAR', `Institución "${instToDelete.name}" eliminada.`);
+      }
       fetchInstitutions();
     } catch (error: any) {
       alert('Error eliminando: ' + error.message);
@@ -282,6 +291,13 @@ const Institutions = () => {
                     </td>
                     <td className="px-3 md:px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-1 md:gap-2">
+                        <button
+                          onClick={() => navigate(`/institutions/${inst.id}`)}
+                          className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors"
+                          title="Ver detalle completo"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z" /><circle cx="12" cy="12" r="3" /></svg>
+                        </button>
                         <button
                           onClick={() => handleOpenModal(inst)}
                           className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
